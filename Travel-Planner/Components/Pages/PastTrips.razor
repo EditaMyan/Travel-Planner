@@ -1,0 +1,91 @@
+﻿@page "/PastTrips"
+@using Travel_Planner.Data
+@inject Detailes DetailesService
+
+<NavLink class="nav-link btn btn-primary" href="AddNewTrip">
+    <span class="oi oi_plus" aria-hidden="true"> Add New Trip</span>
+</NavLink>
+
+<h3>Past Trips</h3>
+@if(trips is null) 
+{
+    <p><em>Loading</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    ID
+                </th>
+                <th>
+                    Trip Name
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th>
+                    Country
+                </th>
+                <th>
+                    City
+                </th>
+                <th>
+                    Edit
+                </th>
+                <th>
+                    Delete
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var trip in trips)
+            {
+                <tr>
+                    <td>
+                        @trip.Id
+                    </td>
+                    <td>
+                        @trip.TripName
+                    </td>
+                    <td>
+                        @trip.StartDate
+                    </td>
+                    <td>
+                        @trip.EndDate
+                    </td>
+                    <td>
+                        @trip.Country
+                    </td>
+                    <td>
+                        @trip.City
+                    </td>
+                    <td>
+                        <a class="nav-link btn btn-outline-dark" href="EditTrip/@trip.TripName">
+                            <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a class="nav-link btn btn-outline-danger" href="DeleteTrip/@trip.TripName">
+                            <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    
+    List<Trip> trips;
+
+    protected override async Task OnInitializedAsync()
+    {
+        trips = await DetailesService.GetAllTrips();
+    }
+}

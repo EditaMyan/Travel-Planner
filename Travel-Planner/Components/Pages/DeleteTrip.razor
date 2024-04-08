@@ -1,0 +1,83 @@
+﻿@page "/DeleteTrip/{TripName}"
+@using Travel_Planner.Data
+@inject Detailes DetailesService
+@inject NavigationManager NavigationManager
+
+<h3>Delete Trip</h3>
+<hr />
+
+@if (trip != null)
+{
+    <form>
+        <div class="row">
+            <div class="col_md-6">
+                <div class="for-group">
+                    <label for="Id" class="control-lable" Trip>Id</label>
+                    <label>@trip.Id</label>
+                </div>
+                <div class="for-group">
+                    <label for="TripName" class="control-lable" Trip>Trip Name</label>
+                    <label>@trip.TripName</label>
+                </div>
+                <div class="for-group">
+                    <label for="StartDate" class="control-lable" Trip>Start Date</label>
+                    <label>@trip.StartDate</label>
+                </div>
+                <div class="for-group">
+                    <label for="End Date" class="control-lable" Trip>End Date</label>
+                    <label>@trip.EndDate</label>
+                </div>
+                <div class="for-group">
+                    <label for="Country" class="control-lable" Trip>Country</label>
+                    <label>@trip.Country</label>
+                </div>
+                <div class="for-group">
+                    <label for="City" class="control-lable" Trip>City</label>
+                    <label>@trip.City</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-dark" @onclick="@DeleteTripRecord" value="Delete Trip" />
+                    <input type="button" class="btn btn-secondary" @onclick="@Cancel" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    </form>
+}
+else
+{
+    <p>Trip not found!</p>
+}
+
+@code {
+
+    [Parameter]
+    public string TripName { get; set; }
+    Trip trip;
+
+    protected override async Task OnInitializedAsync()
+    {
+        trip = await DetailesService.GetTripByName(TripName);
+    }
+
+    protected async Task DeleteTripRecord()
+    {
+        if (trip != null)
+        {
+            var success = await DetailesService.DeleteTrip(trip);
+            if (success)
+            {
+                NavigationManager.NavigateTo("/PastTrips");
+            }
+        }
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/PastTrips");
+    }
+
+}

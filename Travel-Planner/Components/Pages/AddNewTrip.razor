@@ -1,0 +1,57 @@
+﻿@page "/AddNewTrip"
+@using Travel_Planner.Data
+@inject Detailes DetailesService
+@inject NavigationManager NavigationManager
+
+<h3>Add New Trip</h3>
+<hr />
+
+<form>
+    <div class="row">
+        <div class="col_md-6">
+            <div class="for-group">
+                <label for="TripName" class="control-lable" Trip>Trip Name</label>
+                <input form="TripName" class="form-control" @bind="@trip.TripName"/>
+            </div>
+            <div class="form-group">
+                <label for="StartDate" class="control-label">Start Date</label>
+                <input form="date" class="form-control" @bind="@trip.StartDate" />
+            </div>
+            <div class="form-group">
+                <label for="EndDate" class="control-label">End Date</label>
+                <input form="date" class="form-control" @bind="@trip.EndDate" />
+            </div>
+            <div class="for-group">
+                <label for="Country" class="control-lable" Trip>Country</label>
+                <input form="Country" class="form-control" @bind="@trip.Country" />
+            </div>
+            <div class="for-group">
+                <label for="City" class="control-lable" Trip>City</label>
+                <input form="City" class="form-control" @bind="@trip.City" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-success" @onclick="@AddNewTripDetails" value="Save Trip"/>
+                <input type="button" class="btn btn-secondary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@code {
+    Trip trip = new Trip();
+
+    protected async void AddNewTripDetails()
+    {
+        await DetailesService.AddNewTrip(trip);
+        NavigationManager.NavigateTo("/PastTrips");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/PastTrips");
+    }
+
+}
