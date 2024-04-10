@@ -1,10 +1,17 @@
-﻿@page "/AddNewTrip"
+@page "/AddNewTrip"
 @using Travel_Planner.Data
 @inject Detailes DetailesService
 @inject NavigationManager NavigationManager
 
 <h3>Add New Trip</h3>
 <hr />
+
+@if (!string.IsNullOrEmpty(ValidationMessage))
+{
+    <div class="alert alert-warning" role="alert">
+        @ValidationMessage
+    </div>
+}
 
 <form>
     <div class="row">
@@ -42,13 +49,31 @@
 </form>
 
 @code {
+    string ValidationMessage { get; set; } = "";
     Trip trip = new Trip();
 
     protected async void AddNewTripDetails()
     {
-        await DetailesService.AddNewTrip(trip);
-        NavigationManager.NavigateTo("/PastTrips");
+        ValidateFields();
+        if (ValidationMessage == null)
+        {
+            await DetailesService.AddNewTrip(trip);
+            NavigationManager.NavigateTo("/PastTrips");
+        }
     }
+
+    void ValidateFields()
+    {
+        if (string.IsNullOrEmpty(trip.TripName) || trip.StartDate == default || trip.EndDate == default)
+        {
+            ValidationMessage = "Please fill out all required fields.";
+        }
+        else
+        {
+            ValidationMessage = null;
+        }
+    }
+
     void Cancel()
     {
         NavigationManager.NavigateTo("/PastTrips");
