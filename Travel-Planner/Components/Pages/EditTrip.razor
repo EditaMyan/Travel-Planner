@@ -1,10 +1,17 @@
-﻿@page "/EditTrip/{TripName}"
+@page "/EditTrip/{TripName}"
 @using Travel_Planner.Data
 @inject Detailes DetailesService
 @inject NavigationManager NavigationManager
 
 <h3>Edit Trip</h3>
 <hr />
+
+@if (!string.IsNullOrEmpty(ValidationMessage))
+{
+    <div class="alert alert-warning" role="alert">
+        @ValidationMessage
+    </div>
+}
 
 @if (trip != null)
 {
@@ -54,6 +61,7 @@ else
 
 @code {
 
+    public string ValidationMessage { get; set; } = "";
     [Parameter]
     public string TripName { get; set; }
     Trip trip;
@@ -65,9 +73,25 @@ else
 
     protected async Task UpdateTripDetails()
     {
-        if (await DetailesService.UpdateTripDetails(trip))
+        ValidateFields();
+        if (ValidationMessage == null)
         {
-            NavigationManager.NavigateTo("/PastTrips", forceLoad: true);
+            if (await DetailesService.UpdateTripDetails(trip))
+            {
+                NavigationManager.NavigateTo("/PastTrips", forceLoad: true);
+            }
+        }
+    }
+
+    void ValidateFields()
+    {
+        if (string.IsNullOrEmpty(trip.TripName) || trip.StartDate == default || trip.EndDate == default)
+        {
+            ValidationMessage = "Please fill out all required fields.";
+        }
+        else
+        {
+            ValidationMessage = null;
         }
     }
 
